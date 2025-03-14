@@ -29,4 +29,42 @@ router.get('/', async (req, res) =>{
     }
 });
 
+//obtener un solo cliente 
+
+router.get('/:id', async (req, res) => {
+    try{
+        const { id } = req.params;
+        const [rows] = await pool.execute(
+            'SELECT * FROM cliente WHERE id_cliente =?',
+            [id]
+        );
+        if (rows.length >0) {
+            res.json(rows[0]);
+        }else {
+            res.status(404).json({ message: 'Cliente no encontrado'});
+       }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+//Actualizar un cliente 
+router.put('/:id', async (req, res)=>{
+    try{
+        const { id } = req.params;
+        const { nombre, email, telefono } = req.body;
+        const [result] = await pool.execute(
+            'UPDATE cliente SET nombre=?, email=?, telefono=? WHERE id_cliente=?',
+            [nombre, email, telefono, id]
+        );
+        if(result.affectedRows > 0){
+            res.json({ message: 'Cliente actualizado correctamente '});
+        } else{
+            res.status(404).json({ message: 'Cliente no encontrado'});
+        }
+    } catch(err){
+        res.status(500).send(err)
+    }
+});
+
 module.exports = router;

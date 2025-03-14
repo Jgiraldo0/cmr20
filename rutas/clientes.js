@@ -20,7 +20,7 @@ router.post('/', async (req, res) =>{
 router.get('/', async (req, res) =>{
     try{
         const[rows] = await pool.execute(
-            'SELECt * FROM cliente'
+            'SELECT * FROM cliente'
         );
         res.json(rows)
 
